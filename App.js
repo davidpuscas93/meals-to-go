@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { ThemeProvider } from "styled-components/native";
 
@@ -18,7 +19,34 @@ import RestaurantsScreen from "./src/features/restaurants/screens/restaurants.sc
 import MapScreen from "./src/features/map/screens/map.screen";
 import SettingsScreen from "./src/features/settings/screens/settings.screen";
 
+import { colors } from "./src/infrastructure/theme/colors";
+
 const Tab = createBottomTabNavigator();
+
+const TAB_ICON_FOCUSED = {
+  Restaurants: "restaurant",
+  Map: "map",
+  Settings: "settings",
+};
+
+const TAB_ICON_UNFOCUSED = {
+  Restaurants: "restaurant-outline",
+  Map: "map-outline",
+  Settings: "settings-outline",
+};
+
+const renderScreenOptions = ({ route }) => {
+  return {
+    tabBarIcon: ({ focused, color, size }) => {
+      const icon = focused
+        ? TAB_ICON_FOCUSED[route.name]
+        : TAB_ICON_UNFOCUSED[route.name];
+      return <Ionicons name={icon} size={size} color={color} />;
+    },
+    tabBarActiveTintColor: "tomato",
+    tabBarInactiveTintColor: colors.ui.secondary,
+  };
+};
 
 export default function App() {
   const [oswaldLoaded] = useOswald({
@@ -35,7 +63,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <NavigationContainer>
-        <Tab.Navigator>
+        <Tab.Navigator screenOptions={renderScreenOptions}>
           <Tab.Screen name="Restaurants" component={RestaurantsScreen} />
           <Tab.Screen name="Map" component={MapScreen} />
           <Tab.Screen name="Settings" component={SettingsScreen} />
